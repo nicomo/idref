@@ -12,7 +12,7 @@ type authGetSingleTest struct {
 	Valid       bool
 }
 
-func TestGetAuthority(t *testing.T) {
+func TestAuthorityGet(t *testing.T) {
 	var authGetSingleTestCases = []authGetSingleTest{
 		{
 			Description: "Single PPN, valid Org: Lycée Michelet",

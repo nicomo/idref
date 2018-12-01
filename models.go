@@ -11,14 +11,26 @@ type AuthorityRecord struct {
 	Organization Organization
 }
 
+// AuthorityRole is the role an authority plays in a document
+// for instance Author, Translator, etc
+type AuthorityRole struct {
+	UnimarcCode string
+	Marc21Code  string
+	RoleName    string
+}
+
 // Document is a single bibliographic reference
 type Document struct {
-	Citation string `json:"citation"`
-	Source   string `json:"referentiel"`
-	ID       int    `json:"id"`
-	URI      string `json:"URI"`
-	URL      string `json:"URL"`
+	AuthorityRole AuthorityRole
+	Citation      string
+	ID            string
+	Source        string
+	URI           string
+	URL           string
 }
+
+// Documents is a slice of Document
+type Documents []Document
 
 // Identifier is an ID for the authority
 // in a source other than IdRef itself
@@ -45,18 +57,4 @@ type Person struct {
 	Name       string
 	PrefLabel  string
 	Surname    string
-}
-
-// ReferencesResult is used to unamrshall
-// the raw json result coming from the references web service
-type ReferencesResult struct {
-	Role []struct {
-		Marc21Code  string     `json:"marc21Code"`
-		RoleName    string     `json:"roleName"`
-		Count       int        `json:"count"`
-		Doc         []Document `json:"doc"`
-		UnimarcCode string     `json:"unimarcCode"`
-	} `json:"role"`
-	Name       string `json:"name"`
-	CountRoles int    `json:"countRoles"`
 }

@@ -1,6 +1,7 @@
 package idref
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -150,13 +151,15 @@ func callIDRef(getURL string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
+	defer resp.Body.Close()
+
+	//TODO: check 404s etc
 
 	// put the response into a []byte
 	b, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
 	if err != nil {
 		return []byte{}, err
 	}
-
+	fmt.Println(string(b))
 	return b, nil
 }
