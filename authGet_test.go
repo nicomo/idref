@@ -73,6 +73,12 @@ func TestAuthorityGet(t *testing.T) {
 			},
 			Valid: true,
 		},
+		{
+			Description: "Invalid PPN",
+			Input:       "03534009",
+			Expected:    AuthorityRecord{},
+			Valid:       false,
+		},
 	}
 
 	for _, test := range authGetSingleTestCases {

@@ -3,7 +3,6 @@ package idref
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
@@ -14,19 +13,19 @@ import (
 // given an ID in the IdRef databases
 func AuthorityGet(PPN string) (AuthorityRecord, error) {
 
+	// provision an authority struct
+	auth := AuthorityRecord{}
+
 	getURL := "https://www.idref.fr/" + PPN + ".rdf"
 	resp, err := callIDRef(getURL)
 	if err != nil {
-		log.Fatalf("couldn't retrieve response from IdRef: %v", err)
+		return auth, fmt.Errorf("couldn't retrieve response from IdRef: %v", err)
 	}
 
 	result := etree.NewDocument()
 	if err = result.ReadFromBytes(resp); err != nil {
-		log.Fatal(err)
+		return auth, err
 	}
-
-	// provision an authority struct
-	auth := AuthorityRecord{}
 
 	// loop through the documents until we find the
 	// document with the authority's metadata
@@ -153,13 +152,15 @@ func callIDRef(getURL string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	//TODO: check 404s etc
+	// check http errors and anything other than 200
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("got %s", resp.Status)
+	}
 
 	// put the response into a []byte
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return []byte{}, err
 	}
-	fmt.Println(string(b))
 	return b, nil
 }

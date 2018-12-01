@@ -12,7 +12,7 @@ type docsGetTest struct {
 	Valid       bool
 }
 
-func TestRefsGet(t *testing.T) {
+func TestDocsGet(t *testing.T) {
 	var docsGetTestCases = []docsGetTest{
 		{
 			Description: "Docs for single PPN, valid Org: Université du Rwanda",
@@ -320,9 +320,15 @@ func TestRefsGet(t *testing.T) {
 			},
 			Valid: true,
 		},
+		{
+			Description: "Docs for single invalid PPN",
+			Input:       "02797524",
+			Expected:    nil,
+			Valid:       false,
+		},
 	}
 	for _, test := range docsGetTestCases {
-		actual, err := RefGet(test.Input)
+		actual, err := DocsGet(test.Input)
 		if err != nil && !test.Valid {
 			t.Logf("PASS %s: got %v", test.Description, err)
 		}

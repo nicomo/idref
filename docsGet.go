@@ -2,25 +2,24 @@ package idref
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/beevik/etree"
 )
 
-// RefGet retrieve the documents associated
+// DocsGet retrieve the documents associated
 // with a single authority record
 // the IdRef ID (a.k.a PPN) of the auth record should be provided
-func RefGet(PPN string) (Documents, error) {
+func DocsGet(PPN string) (Documents, error) {
 
 	getURL := "https://www.idref.fr/services/references/" + PPN + ".xml"
 	resp, err := callIDRef(getURL)
 	if err != nil {
-		log.Fatalf("couldn't retrieve response from IdRef: %v", err)
+		return nil, fmt.Errorf("couldn't retrieve response from IdRef: %v", err)
 	}
 
 	result := etree.NewDocument()
 	if err := result.ReadFromBytes(resp); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	// we provision a slice of docs
@@ -46,6 +45,5 @@ func RefGet(PPN string) (Documents, error) {
 		}
 	}
 
-	fmt.Printf("DOCS: %+v", docs)
 	return docs, nil
 }
