@@ -1,6 +1,7 @@
 package idref
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -140,6 +141,23 @@ func AuthorityGet(PPN string) (AuthorityRecord, error) {
 	Nom commun RAMEAU
 	Nom commun FMeSH
 	*/
+}
+
+// AuthorityGetAsJSON retrieves an authority record
+// and returns it formatted in JSON
+func AuthorityGetAsJSON(PPN string) ([]byte, error) {
+
+	ar, err := AuthorityGet(PPN)
+	if err != nil {
+		return nil, err
+	}
+
+	json, err := json.MarshalIndent(ar, "", "	")
+	if err != nil {
+		return nil, err
+	}
+
+	return json, nil
 }
 
 // callIDRef performs the http GET

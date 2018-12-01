@@ -1,10 +1,10 @@
-# idref-client
+# idref
 
 ## DO NOT USE
 
 _Work in progress_
 
-A Golang client for the Web Services available for IdRef - a service run by ABES in France to expose authority records from Calames (EAD finding aids), Sudoc (Union catalog) and theses.fr (French PhDs).
+A Go client for the Web Services available for [https://www.idref.fr](IdRef) - a service run by ABES in France to expose authority records from [http://www.calames.abes.fr](Calames) (EAD finding aids), [http://www.sudoc.abes.fr](Sudoc) (Union catalog) and https://www.theses.fr (French PhDs).
 
 The web services are documented (French only afaik) at http://documentation.abes.fr/aideidrefdeveloppeur/index.html
 
