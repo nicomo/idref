@@ -19,6 +19,9 @@ type AuthorityRole struct {
 	RoleName    string
 }
 
+// Authorities is a bunch of authority records
+type Authorities []AuthorityRecord
+
 // Document is a single bibliographic reference
 type Document struct {
 	AuthorityRole AuthorityRole
@@ -55,6 +58,7 @@ type Person struct {
 	FamilyName string
 	GivenName  string
 	Name       string
+	AltLabels  []string
 	PrefLabel  string
 	Surname    string
 }
