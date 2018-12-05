@@ -12,9 +12,10 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// AuthSearchAll uses the "all" index at IdRef
-// and so can retrieve Persons, Corporations, etc
-func AuthSearchAll(s string) (Authorities, error) {
+// AuthSearch uses the Solr search at IdRef
+// Can retrieve Persons, Corporations, etc
+// defaults to the "all" index if the provided index is unknown or not implemented
+func AuthSearch(s, index string) (Authorities, error) {
 	// we provision a slice of authorities
 	auths := Authorities{}
 
@@ -24,13 +25,14 @@ func AuthSearchAll(s string) (Authorities, error) {
 		return auths, err
 	}
 
+	index = validateIndex(index)
+
 	// build URL
-	qURLString, err := qURLBuild(searchString, "all")
+	qURLString, err := qURLBuild(searchString, index)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("\nqURLString: %s\n", qURLString)
 	// actually call the web service
 	resp, err := callIDRef(qURLString)
 	if err != nil {
@@ -59,83 +61,6 @@ func AuthSearchAll(s string) (Authorities, error) {
 	return auths, nil
 }
 
-// AuthSearchPerson searches for a Person Authority
-func AuthSearchPerson(s string) (Authorities, error) {
-
-	// we provision a slice of authorities
-	auths := Authorities{}
-	searchString, err := buildSearchString(s)
-	if err != nil {
-		return auths, err
-	}
-
-	// build URL
-	qURLString, err := qURLBuild(searchString, "persname_t")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// actually call the web service
-	resp, err := callIDRef(qURLString)
-	if err != nil {
-		return auths, fmt.Errorf("couldn't retrieve response from IdRef: %v", err)
-	}
-
-	result := etree.NewDocument()
-	if err = result.ReadFromBytes(resp); err != nil {
-		return auths, err
-	}
-	for _, doc := range result.FindElements("./response/result/doc") {
-		auth := AuthorityRecord{}
-		parsePerson(doc, &auth)
-		auths = append(auths, auth)
-	}
-
-	return auths, nil
-}
-
-func isMn(r rune) bool {
-	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
-}
-
-// qURLBuild builds the url search query
-func qURLBuild(searchString, index string) (string, error) {
-
-	qURL, err := url.Parse("https://www.idref.fr/Sru/Solr")
-	if err != nil {
-		return "", fmt.Errorf("couldn't create URL: %s", err)
-	}
-	q := qURL.Query()
-	q.Set("q", index+":("+searchString+")")
-	q.Add("start", "0")
-	q.Add("rows", "30")
-	q.Add("fl", "recordtype_z,ppn_z,affcourt_r,affcourt_z")
-	qURL.RawQuery = q.Encode()
-
-	return qURL.String(), nil
-}
-
-// parsePerson parses an xml tree into a Person auth struct
-func parsePerson(doc *etree.Element, auth *AuthorityRecord) {
-
-	if arr := doc.FindElement("arr[@name='affcourt_r']"); arr != nil {
-		for _, strTag := range arr.SelectElements("str") {
-			auth.Person.AltLabels = append(auth.Person.AltLabels, strTag.Text())
-		}
-	}
-
-	for _, v := range doc.FindElements("str") {
-		for _, attr := range v.Attr {
-			switch attr.Value {
-			case "ppn_z":
-				auth.ID = v.Text()
-			case "affcourt_z":
-				auth.Person.PrefLabel = v.Text()
-			}
-		}
-	}
-}
-
 // buildSearchString removes words < 2 and diacritics
 // they're not supported by idref search solr :-(
 func buildSearchString(s string) (string, error) {
@@ -162,4 +87,57 @@ func buildSearchString(s string) (string, error) {
 
 	return strings.Join(sTerms, " AND "), nil
 
+}
+
+func isMn(r rune) bool {
+	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+}
+
+// parsePerson parses an xml tree into a Person auth struct
+func parsePerson(doc *etree.Element, auth *AuthorityRecord) {
+
+	if arr := doc.FindElement("arr[@name='affcourt_r']"); arr != nil {
+		for _, strTag := range arr.SelectElements("str") {
+			auth.Person.AltLabels = append(auth.Person.AltLabels, strTag.Text())
+		}
+	}
+
+	for _, v := range doc.FindElements("str") {
+		for _, attr := range v.Attr {
+			switch attr.Value {
+			case "ppn_z":
+				auth.ID = v.Text()
+			case "affcourt_z":
+				auth.Person.PrefLabel = v.Text()
+			}
+		}
+	}
+}
+
+// qURLBuild builds the url search query
+func qURLBuild(searchString, index string) (string, error) {
+
+	qURL, err := url.Parse("https://www.idref.fr/Sru/Solr")
+	if err != nil {
+		return "", fmt.Errorf("couldn't create URL: %s", err)
+	}
+	q := qURL.Query()
+	q.Set("q", index+":("+searchString+")")
+	q.Add("start", "0")
+	q.Add("rows", "30")
+	q.Add("fl", "recordtype_z,ppn_z,affcourt_r,affcourt_z")
+	qURL.RawQuery = q.Encode()
+
+	return qURL.String(), nil
+}
+
+// validateIndex defaults to "all" if the index is unknown
+func validateIndex(index string) string {
+	indexes := []string{"persname_t", "persname_s", "corpname_t", "corpname_s"}
+	for _, v := range indexes {
+		if index == v {
+			return index
+		}
+	}
+	return "all"
 }

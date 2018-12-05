@@ -1,5 +1,3 @@
-// persname_t:(Natsume AND Sōseki)
-
 package idref
 
 import (
@@ -7,17 +5,19 @@ import (
 	"testing"
 )
 
-type authSearchPersonTest struct {
-	Description string
-	Input       string
-	Expected    Authorities
-	Valid       bool
+type authSearchTest struct {
+	Description      string
+	InputSearchTerms string
+	InputSearchIndex string
+	Expected         Authorities
+	Valid            bool
 }
 
-var authSearchPersonTestCases = []authSearchPersonTest{
+var authSearchTestCases = []authSearchTest{
 	{
-		Description: "Person Search: Natsume AND Sōseki",
-		Input:       "Natsume Sōseki",
+		Description:      "Person Search, one result",
+		InputSearchTerms: "Natsume Sōseki",
+		InputSearchIndex: "persname_t",
 		Expected: Authorities{
 			AuthorityRecord{
 				ID: "027044971",
@@ -39,34 +39,20 @@ var authSearchPersonTestCases = []authSearchPersonTest{
 				},
 			},
 		},
-		Valid: false,
+		Valid: true,
 	},
 }
 
-func TestAuthSearchPerson(t *testing.T) {
-	for _, test := range authSearchPersonTestCases {
-		actual, err := AuthSearchPerson(test.Input)
+func TestAuthSearch(t *testing.T) {
+	for _, test := range authSearchTestCases {
+		actual, err := AuthSearch(test.InputSearchTerms, test.InputSearchIndex)
 		if err != nil && !test.Valid {
 			t.Logf("PASS %s: got %v", test.Description, err)
 		}
 		if reflect.DeepEqual(test.Expected, actual) {
 			t.Logf("PASS %s", test.Description)
 		} else {
-			t.Fatalf("FAIL for %s (%s): expected %v, actual result was %v", test.Input, test.Description, test.Expected, actual)
-		}
-	}
-}
-
-func TestAuthSearchAll(t *testing.T) {
-	for _, test := range authSearchPersonTestCases {
-		actual, err := AuthSearchAll(test.Input)
-		if err != nil && !test.Valid {
-			t.Logf("PASS %s: got %v", test.Description, err)
-		}
-		if reflect.DeepEqual(test.Expected, actual) {
-			t.Logf("PASS %s", test.Description)
-		} else {
-			t.Fatalf("FAIL for %s (%s): expected %v, actual result was %v", test.Input, test.Description, test.Expected, actual)
+			t.Fatalf("FAIL for %s: expected %v, actual result was %v", test.Description, test.Expected, actual)
 		}
 	}
 }
