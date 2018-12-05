@@ -105,7 +105,7 @@ func AuthorityGet(PPN string) (AuthorityRecord, error) {
 			case "name":
 				org.Name = e.Text()
 			case "altLabel":
-				org.AltLabel = append(org.AltLabel, e.Text())
+				org.AltLabels = append(org.AltLabels, e.Text())
 			case "dateOfBirth":
 				org.DateOfBirth = e.Text()
 			case "FRBNF":

@@ -13,7 +13,7 @@ import (
 )
 
 // AuthSearch uses the Solr search at IdRef
-// Can retrieve Persons, Corporations, etc
+// Can retrieve Persons, Organization, etc
 // defaults to the "all" index if the provided index is unknown or not implemented
 func AuthSearch(s, index string) (Authorities, error) {
 	// we provision a slice of authorities
@@ -51,6 +51,9 @@ func AuthSearch(s, index string) (Authorities, error) {
 			switch rTZ.Text() {
 			case "a":
 				parsePerson(doc, &auth)
+				auths = append(auths, auth)
+			case "b":
+				parseOrg(doc, &auth)
 				auths = append(auths, auth)
 			default:
 				fmt.Println("recordtype_z unknown or not implemented")
@@ -112,6 +115,38 @@ func parsePerson(doc *etree.Element, auth *AuthorityRecord) {
 			}
 		}
 	}
+}
+
+func parseOrg(doc *etree.Element, auth *AuthorityRecord) {
+
+	if arr := doc.FindElement("arr[@name='affcourt_r']"); arr != nil {
+		for _, strTag := range arr.SelectElements("str") {
+			auth.Organization.AltLabels = append(auth.Organization.AltLabels, strTag.Text())
+		}
+	}
+
+	for _, v := range doc.FindElements("str") {
+		for _, attr := range v.Attr {
+			switch attr.Value {
+			case "ppn_z":
+				auth.ID = v.Text()
+			case "affcourt_z":
+				auth.Person.PrefLabel = v.Text()
+			}
+		}
+	}
+
+	for _, v := range doc.FindElements("date") {
+		for _, attr := range v.Attr {
+			switch attr.Value {
+			case "datenaissance_dt":
+				auth.Organization.DateOfBirth = v.Text()
+			case "dateetat_dt":
+				auth.DateCreated = v.Text()
+			}
+		}
+	}
+
 }
 
 // qURLBuild builds the url search query

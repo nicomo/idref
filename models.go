@@ -45,7 +45,7 @@ type Identifier struct {
 
 // Organization regroups fields specific to an Organization authority record
 type Organization struct {
-	AltLabel    []string
+	AltLabels   []string
 	DateOfBirth string
 	Name        string
 	PrefLabel   string

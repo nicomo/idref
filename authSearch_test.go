@@ -41,6 +41,13 @@ var authSearchTestCases = []authSearchTest{
 		},
 		Valid: true,
 	},
+	{
+		Description:      "Org Search, one result",
+		InputSearchTerms: "Lycée Michelet",
+		InputSearchIndex: "corpname_t",
+		Expected:         Authorities{},
+		Valid:            false,
+	},
 }
 
 func TestAuthSearch(t *testing.T) {

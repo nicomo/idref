@@ -44,7 +44,7 @@ func TestAuthorityGet(t *testing.T) {
 				Organization: Organization{
 					PrefLabel: "Lycée Michelet (Vanves, Hauts-de-Seine)",
 					Name:      "Lycée Michelet (Vanves, Hauts-de-Seine)",
-					AltLabel: []string{
+					AltLabels: []string{
 						"Lycée de Vanves",
 						"Petit collège de Vanves",
 						"Lycée du Prince impérial",
@@ -122,7 +122,7 @@ func TestAuthorityGetAsJSON(t *testing.T) {
 		},
 		Person: Person{},
 		Organization: Organization{
-			AltLabel: []string{
+			AltLabels: []string{
 				"Lycée de Vanves",
 				"Petit collège de Vanves",
 				"Lycée du Prince impérial",
