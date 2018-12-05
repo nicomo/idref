@@ -40,23 +40,17 @@ func AuthSearchPerson(s string) (Authorities, error) {
 
 	searchString := strings.Join(sTerms, " AND ")
 
-	// build url query
-	qURL, err := url.Parse("https://www.idref.fr/Sru/Solr")
+	// build URL
+	qURLString, err := qURLBuild(searchString)
 	if err != nil {
-		log.Fatalf("couldn't create URL: %s", err)
+		log.Fatal(err)
 	}
-	q := qURL.Query()
-	q.Set("q", "persname_t:("+searchString+")")
-	q.Add("start", "0")
-	q.Add("rows", "30")
-	q.Add("fl", "recordtype_z,ppn_z,affcourt_r,affcourt_z")
-	qURL.RawQuery = q.Encode()
 
 	// we provision a slice of authorities
 	auths := Authorities{}
 
 	// actually call the web service
-	resp, err := callIDRef(qURL.String())
+	resp, err := callIDRef(qURLString)
 	if err != nil {
 		return auths, fmt.Errorf("couldn't retrieve response from IdRef: %v", err)
 	}
@@ -67,42 +61,58 @@ func AuthSearchPerson(s string) (Authorities, error) {
 	}
 	for _, doc := range result.FindElements("./response/result/doc") {
 
-		auth := AuthorityRecord{
-			Person: Person{},
-		}
+		auth := AuthorityRecord{}
 
-		if arr := doc.SelectElement("arr"); arr != nil {
-			nameValue := arr.SelectAttrValue("name", "unknown")
-			if nameValue != "affcourt_r" {
-				break
-			}
-			for _, strTag := range arr.SelectElements("str") {
-				auth.Person.AltLabels = append(auth.Person.AltLabels, strTag.Text())
-			}
-		}
-
-		for _, v := range doc.FindElements("str") {
-			for _, attr := range v.Attr {
-				switch attr.Value {
-				case "ppn_z":
-					auth.ID = v.Text()
-				case "affcourt_z":
-					auth.Person.PrefLabel = v.Text()
-				}
+		// what sort of authority is this?
+		if rTZ := doc.FindElement("[@name='recordtype_z']"); t != nil {
+			switch rTZ.Text() {
+			case "a":
+				parsePerson(doc, &auth)
+			default:
+				fmt.Println("recordtype_z unknown or not implemented)")
 			}
 		}
 
 		auths = append(auths, auth)
 	}
 
-	/*
-		<doc>
-
-		            <str name="affcourt_z">Natsume, Sōseki (1867-1916)</str>
-		            <str name="ppn_z">027044971</str>
-		            <str name="recordtype_z">a</str>
-		        </doc>
-	*/
-
 	return auths, nil
+}
+
+// qURLBuild builds the url search query
+func qURLBuild(searchString string) (string, error) {
+
+	qURL, err := url.Parse("https://www.idref.fr/Sru/Solr")
+	if err != nil {
+		return "", fmt.Errorf("couldn't create URL: %s", err)
+	}
+	q := qURL.Query()
+	q.Set("q", "persname_t:("+searchString+")")
+	q.Add("start", "0")
+	q.Add("rows", "30")
+	q.Add("fl", "recordtype_z,ppn_z,affcourt_r,affcourt_z")
+	qURL.RawQuery = q.Encode()
+
+	return qURL.String(), nil
+}
+
+// parsePerson parses an xml tree into a Person auth struct
+func parsePerson(doc *etree.Element, auth *AuthorityRecord) {
+
+	if arr := doc.FindElement("arr[@name='affcourt_r']"); arr != nil {
+		for _, strTag := range arr.SelectElements("str") {
+			auth.Person.AltLabels = append(auth.Person.AltLabels, strTag.Text())
+		}
+	}
+
+	for _, v := range doc.FindElements("str") {
+		for _, attr := range v.Attr {
+			switch attr.Value {
+			case "ppn_z":
+				auth.ID = v.Text()
+			case "affcourt_z":
+				auth.Person.PrefLabel = v.Text()
+			}
+		}
+	}
 }
