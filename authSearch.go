@@ -131,7 +131,7 @@ func parseOrg(doc *etree.Element, auth *AuthorityRecord) {
 			case "ppn_z":
 				auth.ID = v.Text()
 			case "affcourt_z":
-				auth.Person.PrefLabel = v.Text()
+				auth.Organization.PrefLabel = v.Text()
 			}
 		}
 	}
