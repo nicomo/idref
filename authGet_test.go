@@ -78,7 +78,6 @@ func TestAuthorityGet(t *testing.T) {
 					Name:       "Bourdieu, Pierre",
 					PrefLabel:  "Bourdieu, Pierre (1930-2002)",
 				},
-				Organization: Organization{},
 			},
 			Valid: true,
 		},

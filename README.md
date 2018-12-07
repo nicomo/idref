@@ -8,18 +8,17 @@ The web services are documented (French only afaik) at http://documentation.abes
 
 ## Covered
 
-- get authority: retrieves an authority record when you provide an ID for it (PPN). Currently covers Persons and Corporations only
-- references: get the documents linked to an authority record when you provide an ID for it (PPN)
-- solr search
-  - search a Person (index persname_t)
-  - search an Organization (index corpname_t)
+- get authority: currently covers Persons and Orgs only
+- references
+- solr search: defaults to the "all" index if no known index is provided. So far only parses Persons (index persname_t) and Orgs (index corpname_t)
+- id2idref
+- idref2id: does not use the "subservices" to limit the scope of the returned sources
+
 
 ## Not covered
 
-- biblio: use references instead
+- biblio: use references instead, which provides the same results (records from SUDOC) and more
 - merged
 - merged_inv
-- idref2id
-- id2idref
 - iln2rcr
 - iln2td3
