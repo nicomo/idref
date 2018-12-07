@@ -12,9 +12,9 @@ The web services are documented (French only afaik) at http://documentation.abes
 - references: get the documents linked to an authority record when you provide an ID for it (PPN)
 - solr search
   - search a Person (index persname_t)
+  - search an Organization (index corpname_t)
 
 ## Not covered
-
 
 - biblio: use references instead
 - merged

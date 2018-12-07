@@ -124,6 +124,14 @@ func AuthorityGet(PPN string) (AuthorityRecord, error) {
 						Source: "ISNI",
 					},
 				)
+			case "rnsr":
+				auth.Identifiers = append(
+					auth.Identifiers,
+					Identifier{
+						ID:     e.Text(),
+						Source: "RNSR",
+					},
+				)
 			default:
 				continue
 			}
