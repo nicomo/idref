@@ -7,8 +7,8 @@ import (
 
 type idref2idTest struct {
 	Description string
-	Input       string
-	Expected    []Identifier
+	Input       []string
+	Expected    map[string][]Identifier
 	Valid       bool
 }
 
@@ -17,27 +17,29 @@ func TestIDRef2ID(t *testing.T) {
 	idref2idTestCases := []idref2idTest{
 		{
 			Description: "Get sources IDs for valid PPN",
-			Input:       "139753753",
-			Expected: []Identifier{
-				Identifier{
-					"238738325",
-					"VIAF",
-				},
-				Identifier{
-					"0000000385709539",
-					"ISNI",
-				},
-				Identifier{
-					"dacos",
-					"HAL",
-				},
-				Identifier{
-					"0000000293615295",
-					"ORCID",
-				},
-				Identifier{
-					"http://catalogue.bnf.fr/ark:/12148/cb16180961h",
-					"BNF",
+			Input:       []string{"139753753"},
+			Expected: map[string][]Identifier{
+				"139753753": []Identifier{
+					{
+						"238738325",
+						"VIAF",
+					},
+					{
+						"0000000385709539",
+						"ISNI",
+					},
+					{
+						"dacos",
+						"HAL",
+					},
+					{
+						"0000000293615295",
+						"ORCID",
+					},
+					{
+						"http://catalogue.bnf.fr/ark:/12148/cb16180961h",
+						"BNF",
+					},
 				},
 			},
 			Valid: true,

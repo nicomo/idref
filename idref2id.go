@@ -2,14 +2,17 @@ package idref
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/beevik/etree"
 )
 
-// IDRef2ID takes a signe IdREf PPN and retrieves
+// IDRef2ID takes one or more IdREf PPNs (IDs) and retrieves
 // IDs for the same entity in other sources (VIAF, BNF, etc)
-func IDRef2ID(ppn string) ([]Identifier, error) {
-	getURL := "https://www.idref.fr/services/idref2id/" + ppn
+func IDRef2ID(ppns []string) (map[string][]Identifier, error) {
+
+	qPPNs := strings.Join(ppns, ",")
+	getURL := "https://www.idref.fr/services/idref2id/" + qPPNs
 
 	resp, err := callIDRef(getURL)
 	if err != nil {
@@ -21,22 +24,25 @@ func IDRef2ID(ppn string) ([]Identifier, error) {
 		return nil, err
 	}
 
-	// provision slice of Identifier
-	var Identifiers []Identifier
+	// provision a result map with query ppns as keys
+	m := make(map[string][]Identifier)
 
-	// for each result...
-	for _, res := range result.FindElements("./sudoc/query/result") {
-		if source := res.SelectElement("source"); source != nil {
-			if id := res.SelectElement("identifiant"); id != nil && source.Text() != "" {
-				Identifiers = append(Identifiers, Identifier{
-					Source: source.Text(),
-					ID:     id.Text(),
-				})
-			}
+	// for each query...
+	for _, query := range result.FindElements("./sudoc/query") {
+		// we get the ppn (IdRef ID) and corresponding source + identifier at source
+		qPPN := query.FindElement("ppn")
+		source := query.FindElement("result/source")
+		id := query.FindElement("result/identifiant")
+
+		if qPPN != nil && source != nil && id != nil && source.Text() != "" {
+			// use query PPN as key and add Identifier as value in result slice
+			m[qPPN.Text()] = append(m[qPPN.Text()], Identifier{
+				Source: source.Text(),
+				ID:     id.Text(),
+			})
 		}
+
 	}
 
-	return Identifiers, nil
+	return m, nil
 }
-
-// TODO: func IDRefs2ID with []string
