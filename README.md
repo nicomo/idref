@@ -11,10 +11,10 @@ This project is experimental/personal, use at your own risk.
 ## Covered
 
 - get authority/authorities: can be used to retrieve a single auth record, or a bunch of auth records at a time. Currently covers Persons and Orgs only
-- references
-- solr search: defaults to the "all" index if no known index is provided. So far only parses Persons (index persname_t) and Orgs (index corpname_t)
-- id2idref
-- idref2id: does not use the "subservices" to limit the scope of the returned sources, _id est_ retrieves all the available IDs from all the available sources
+- references: get the document associated with an authority in the IdRef database
+- solr search: defaults to the "all" index if no known index is provided. So far only parses back Persons and Orgs records
+- id2idref: give an ID from say Wikidata, retrieve an IdRef internal ID if it exists
+- idref2id: give an IdRef internal ID, retrieve other know IDs. Does not use the "subservices" to limit the scope of the returned sources, _id est_ retrieves all the available IDs from all the available sources
 
 See the documentation: https://godoc.org/github.com/nicomo/idref
 
