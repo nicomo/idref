@@ -22,6 +22,13 @@ type AuthorityRole struct {
 // Authorities is a bunch of authority records
 type Authorities []AuthorityRecord
 
+// AuthorityResult stores the result of
+// a request on an auth ID
+type AuthorityResult struct {
+	Auth AuthorityRecord
+	Err  error
+}
+
 // Document is a single bibliographic reference
 type Document struct {
 	AuthorityRole AuthorityRole

@@ -4,13 +4,19 @@ A Go client for the Web Services available for [IdRef](https://www.idref.fr) - a
 
 The web services are documented (French only afaik) at http://documentation.abes.fr/aideidrefdeveloppeur/index.html
 
+## Status 
+
+This project is experimental/personal, use at your own risk.
+
 ## Covered
 
-- get authority: currently covers Persons and Orgs only
+- get authority/authorities: can be used to retrieve a single auth record, or a bunch of auth records at a time. Currently covers Persons and Orgs only
 - references
 - solr search: defaults to the "all" index if no known index is provided. So far only parses Persons (index persname_t) and Orgs (index corpname_t)
 - id2idref
-- idref2id: does not use the "subservices" to limit the scope of the returned sources
+- idref2id: does not use the "subservices" to limit the scope of the returned sources, _id est_ retrieves all the available IDs from all the available sources
+
+See the documentation: https://godoc.org/github.com/nicomo/idref
 
 ## Not covered
 

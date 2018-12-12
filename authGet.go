@@ -1,7 +1,6 @@
 package idref
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,7 +9,57 @@ import (
 	"github.com/beevik/etree"
 )
 
-// TODO: AuthoritiesGet with []string, returns map[string][]AuthorityRecord
+// AuthoritiesGet with []string, returns map[string][]AuthorityRecord
+// FIXME: we're burrying the error in the AuthorityResult struct,
+// which might not be the best way to proceed
+func AuthoritiesGet(PPNS []string) []AuthorityResult {
+	jobs := make(chan string, len(PPNS))
+	results := make(chan AuthorityResult, len(PPNS))
+
+	// dispatch jobs to number of workers, capping at 5
+	numW := 5
+	if len(PPNS) < 5 {
+		numW = len(PPNS)
+	}
+	// This starts up to 5 workers, initially blocked
+	// because there are no jobs yet.
+	for w := 1; w <= numW; w++ {
+		go worker(w, jobs, results)
+	}
+
+	// Here we send the `jobs` and then `close` that
+	// channel to indicate that's all the work we have.
+	for _, v := range PPNS {
+		jobs <- v
+	}
+	close(jobs)
+
+	// Finally we collect all the results of the work
+	var res []AuthorityResult
+	for a := 1; a <= numW; a++ {
+		res = append(res, <-results)
+	}
+	return res
+}
+
+// Here's the worker, of which we'll run several
+// concurrent instances. These workers will receive
+// work on the `jobs` channel and send the corresponding
+// results on `results`.
+func worker(id int, jobs <-chan string, results chan<- AuthorityResult) {
+	for j := range jobs {
+		record, err := AuthorityGet(j)
+		if err != nil {
+			results <- AuthorityResult{
+				Err: err,
+			}
+		}
+
+		results <- AuthorityResult{
+			Auth: record,
+		}
+	}
+}
 
 // AuthorityGet retrieves an authority record
 // given an ID in the IdRef databases
