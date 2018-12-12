@@ -10,6 +10,8 @@ import (
 	"github.com/beevik/etree"
 )
 
+// TODO: AuthoritiesGet with []string, returns map[string][]AuthorityRecord
+
 // AuthorityGet retrieves an authority record
 // given an ID in the IdRef databases
 func AuthorityGet(PPN string) (AuthorityRecord, error) {
@@ -149,23 +151,6 @@ func AuthorityGet(PPN string) (AuthorityRecord, error) {
 	Nom commun RAMEAU
 	Nom commun FMeSH
 	*/
-}
-
-// AuthorityGetAsJSON retrieves an authority record
-// and returns it formatted in JSON
-func AuthorityGetAsJSON(PPN string) ([]byte, error) {
-
-	ar, err := AuthorityGet(PPN)
-	if err != nil {
-		return nil, err
-	}
-
-	json, err := json.MarshalIndent(ar, "", "	")
-	if err != nil {
-		return nil, err
-	}
-
-	return json, nil
 }
 
 // callIDRef performs the http GET
