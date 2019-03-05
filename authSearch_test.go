@@ -42,6 +42,23 @@ var authSearchTestCases = []authSearchTest{
 		Valid: true,
 	},
 	{
+		Description:      "Person Search, test",
+		InputSearchTerms: "Roberto WOLFLER-CALVO",
+		InputSearchIndex: "persname_t",
+		Expected: Authorities{
+			AuthorityRecord{
+				ID: "130072192",
+				Person: Person{
+					PrefLabel: "Wolfler-Calvo, Roberto (1964-....)",
+					AltLabels: []string{
+						"Wolfler-Calvo, Roberto (1964-....)",
+					},
+				},
+			},
+		},
+		Valid: true,
+	},
+	{
 		Description:      "Org Search, valid",
 		InputSearchTerms: "lamentin aéroport",
 		InputSearchIndex: "corpname_t",

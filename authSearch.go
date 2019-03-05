@@ -36,7 +36,7 @@ func AuthSearch(s, index string) (Authorities, error) {
 	// actually call the web service
 	resp, err := callIDRef(qURLString)
 	if err != nil {
-		return auths, fmt.Errorf("couldn't retrieve response from IdRef: %v", err)
+		return auths, fmt.Errorf("could not retrieve response from IdRef: %v - %s", err, qURLString)
 	}
 
 	result := etree.NewDocument()
