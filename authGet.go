@@ -117,16 +117,14 @@ func AuthorityGet(PPN string) (AuthorityRecord, error) {
 				person.Surname = e.Text()
 			case "citizenship":
 				s := e.SelectAttrValue("resource", "dflt")
-				if s == "dflt" {
-					continue
+				if s != "dflt" && len(s) > 3 {
+					person.Citizenship = s
 				}
-				person.Citizenship = s
 			case "language":
 				s := e.SelectAttrValue("resource", "dflt")
-				if s == "dflt" {
-					continue
+				if s != "dflt" && len(s) > 3 {
+					person.Language = s[len(s)-3:]
 				}
-				person.Language = s[len(s)-3:]
 			case "orcidId":
 				auth.Identifiers = append(
 					auth.Identifiers,
