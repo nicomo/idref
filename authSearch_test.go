@@ -21,6 +21,12 @@ var authSearchTestCases = []authSearchTest{
 		Expected: Authorities{
 			AuthorityRecord{
 				ID: "027044971",
+				Identifiers: []Identifier{
+					Identifier{
+						ID:     "027044971",
+						Source: "idref",
+					},
+				},
 				Person: Person{
 					PrefLabel: "Natsume, Sōseki (1867-1916)",
 					AltLabels: []string{
@@ -48,6 +54,12 @@ var authSearchTestCases = []authSearchTest{
 		Expected: Authorities{
 			AuthorityRecord{
 				ID: "130072192",
+				Identifiers: []Identifier{
+					Identifier{
+						ID:     "130072192",
+						Source: "idref",
+					},
+				},
 				Person: Person{
 					PrefLabel: "Wolfler-Calvo, Roberto (1964-....)",
 					AltLabels: []string{
@@ -65,6 +77,12 @@ var authSearchTestCases = []authSearchTest{
 		Expected: Authorities{
 			AuthorityRecord{
 				ID: "027767892",
+				Identifiers: []Identifier{
+					Identifier{
+						ID:     "027767892",
+						Source: "idref",
+					},
+				},
 				Organization: Organization{
 					PrefLabel: "Aéroport du Lamentin (Fort-de-France)",
 					AltLabels: []string{
@@ -76,6 +94,12 @@ var authSearchTestCases = []authSearchTest{
 			},
 			AuthorityRecord{
 				ID: "026357968",
+				Identifiers: []Identifier{
+					Identifier{
+						ID:     "026357968",
+						Source: "idref",
+					},
+				},
 				Organization: Organization{
 					PrefLabel: "Aéroport international de Fort-de-France-Le Lamentin",
 					AltLabels: []string{

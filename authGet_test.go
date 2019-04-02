@@ -30,6 +30,10 @@ func TestAuthorityGet(t *testing.T) {
 				DateUpdated: "2015-10-02T04:31:15",
 				Identifiers: []Identifier{
 					Identifier{
+						ID:     "035340096",
+						Source: "idref",
+					},
+					Identifier{
 						ID:     "13182832",
 						Source: "FRBNF",
 					},
@@ -60,6 +64,10 @@ func TestAuthorityGet(t *testing.T) {
 				DateUpdated: "2018-11-20T15:12:51",
 				Identifiers: []Identifier{
 					Identifier{
+						ID:     "027715078",
+						Source: "idref",
+					},
+					Identifier{
 						ID:     "11893402",
 						Source: "FRBNF",
 					},
@@ -89,6 +97,10 @@ func TestAuthorityGet(t *testing.T) {
 				DateCreated: "1995-01-04",
 				DateUpdated: "2019-04-01T18:01:34",
 				Identifiers: []Identifier{
+					Identifier{
+						ID:     "033522448",
+						Source: "idref",
+					},
 					Identifier{
 						ID:     "12438130",
 						Source: "FRBNF",

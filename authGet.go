@@ -92,6 +92,12 @@ func AuthorityGet(PPN string) (AuthorityRecord, error) {
 					auth.DateCreated = t.Text()
 				case "identifier":
 					auth.ID = t.Text()
+					auth.Identifiers = append(auth.Identifiers,
+						Identifier{
+							ID:     t.Text(),
+							Source: "idref",
+						},
+					)
 				case "modified":
 					auth.DateUpdated = t.Text()
 				}

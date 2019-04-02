@@ -110,6 +110,13 @@ func parsePerson(doc *etree.Element, auth *AuthorityRecord) {
 			switch attr.Value {
 			case "ppn_z":
 				auth.ID = v.Text()
+				auth.Identifiers = append(
+					auth.Identifiers,
+					Identifier{
+						ID:     v.Text(),
+						Source: "idref",
+					},
+				)
 			case "affcourt_z":
 				auth.Person.PrefLabel = v.Text()
 			}
@@ -130,6 +137,13 @@ func parseOrg(doc *etree.Element, auth *AuthorityRecord) {
 			switch attr.Value {
 			case "ppn_z":
 				auth.ID = v.Text()
+				auth.Identifiers = append(
+					auth.Identifiers,
+					Identifier{
+						ID:     v.Text(),
+						Source: "idref",
+					},
+				)
 			case "affcourt_z":
 				auth.Organization.PrefLabel = v.Text()
 			}
