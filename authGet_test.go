@@ -69,12 +69,42 @@ func TestAuthorityGet(t *testing.T) {
 					},
 				},
 				Person: Person{
-					DateBirth:  "1930-08-01",
-					DateDeath:  "2002-01-23",
-					FamilyName: "Bourdieu",
-					GivenName:  "Pierre",
-					Name:       "Bourdieu, Pierre",
-					PrefLabel:  "Bourdieu, Pierre (1930-2002)",
+					DateBirth:   "1930-08-01",
+					DateDeath:   "2002-01-23",
+					FamilyName:  "Bourdieu",
+					GivenName:   "Pierre",
+					Name:        "Bourdieu, Pierre",
+					PrefLabel:   "Bourdieu, Pierre (1930-2002)",
+					Language:    "fra",
+					Citizenship: "http://sws.geonames.org/3017382",
+				},
+			},
+			Valid: true,
+		},
+		{
+			Description: "Single PPN, valid Person: JM Bonnisseau",
+			Input:       "033522448",
+			Expected: AuthorityRecord{
+				ID:          "033522448",
+				DateCreated: "1995-01-04",
+				DateUpdated: "2019-04-01T18:01:34",
+				Identifiers: []Identifier{
+					Identifier{
+						ID:     "12438130",
+						Source: "FRBNF",
+					},
+					Identifier{
+						ID:     "0000000281562229",
+						Source: "ORCID",
+					},
+				},
+				Person: Person{
+					FamilyName:  "Bonnisseau",
+					GivenName:   "Jean-Marc",
+					Name:        "Bonnisseau, Jean-Marc",
+					PrefLabel:   "Bonnisseau, Jean-Marc (1957-....)",
+					Language:    "fra",
+					Citizenship: "http://sws.geonames.org/3017382",
 				},
 			},
 			Valid: true,
@@ -95,7 +125,7 @@ func TestAuthorityGet(t *testing.T) {
 		if reflect.DeepEqual(test.Expected, actual) {
 			t.Logf("PASS %s", test.Description)
 		} else {
-			t.Fatalf("FAIL for %s (%s): expected %v, actual result was %v", test.Input, test.Description, test.Expected, actual)
+			t.Fatalf("FAIL for %s (%s): expected %+v, actual result was %+v", test.Input, test.Description, test.Expected, actual)
 		}
 	}
 

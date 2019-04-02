@@ -60,12 +60,14 @@ type Organization struct {
 
 // Person regroups fields specific to a Person authority record
 type Person struct {
-	DateBirth  string
-	DateDeath  string
-	FamilyName string
-	GivenName  string
-	Name       string
-	AltLabels  []string
-	PrefLabel  string
-	Surname    string
+	DateBirth   string
+	DateDeath   string
+	FamilyName  string
+	GivenName   string
+	Name        string
+	AltLabels   []string
+	PrefLabel   string
+	Surname     string
+	Language    string
+	Citizenship string
 }
