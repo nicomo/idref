@@ -72,14 +72,11 @@ func buildSearchString(s string) (string, error) {
 		return "", fmt.Errorf("search string has to be at least 3 char long, is %d", len(s))
 	}
 
+	// remove diacritics
 	sTerms := strings.Split(s, " ")
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
 
 	for i, w := range sTerms {
-		if len(w) < 2 {
-			sTerms = append(sTerms[:i], sTerms[i+1:]...)
-			continue
-		}
 		b := make([]byte, len(w))
 		_, _, e := t.Transform(b, []byte(w), true)
 		if e != nil {
@@ -88,7 +85,15 @@ func buildSearchString(s string) (string, error) {
 		sTerms[i] = string(b)
 	}
 
-	return strings.Join(sTerms, " AND "), nil
+	// remove strings <2 chars
+	sString := []string{}
+	for _, v := range sTerms {
+		if len(v) >= 2 {
+			sString = append(sString, v)
+		}
+	}
+
+	return strings.Join(sString, " AND "), nil
 
 }
 
