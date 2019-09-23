@@ -68,32 +68,34 @@ func AuthSearch(s, index string) (Authorities, error) {
 // they're not supported by idref search solr :-(
 func buildSearchString(s string) (string, error) {
 
+	// we stop if the whole search string is < 3 chars
 	if len(s) < 3 {
 		return "", fmt.Errorf("search string has to be at least 3 char long, is %d", len(s))
 	}
 
+	s1 := strings.Split(s, " ")
+
+	// remove strings <2 chars
+	s2 := []string{}
+	for _, v := range s1 {
+		if len(v) >= 2 {
+			s2 = append(s2, v)
+		}
+	}
+
 	// remove diacritics
-	sTerms := strings.Split(s, " ")
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
 
-	for i, w := range sTerms {
-		b := make([]byte, len(w))
-		_, _, e := t.Transform(b, []byte(w), true)
+	for i, word := range s2 {
+		b := make([]byte, len(word))
+		_, _, e := t.Transform(b, []byte(word), true)
 		if e != nil {
 			log.Fatalln(e)
 		}
-		sTerms[i] = string(b)
+		s2[i] = string(b)
 	}
 
-	// remove strings <2 chars
-	sString := []string{}
-	for _, v := range sTerms {
-		if len(v) >= 2 {
-			sString = append(sString, v)
-		}
-	}
-
-	return strings.Join(sString, " AND "), nil
+	return strings.Join(s2, " AND "), nil
 
 }
 

@@ -113,6 +113,39 @@ var authSearchTestCases = []authSearchTest{
 		},
 		Valid: true,
 	},
+	{
+		Description:      "Person Search with char parsing of name",
+		InputSearchTerms: "Natsume K Sōseki",
+		InputSearchIndex: "persname_t",
+		Expected: Authorities{
+			AuthorityRecord{
+				ID: "027044971",
+				Identifiers: []Identifier{
+					Identifier{
+						ID:     "027044971",
+						Source: "idref",
+					},
+				},
+				Person: Person{
+					PrefLabel: "Natsume, Sōseki (1867-1916)",
+					AltLabels: []string{
+						"Natsume, Sōseki (1867-1916)",
+						"夏目, 漱石 (1867-1916)",
+						"Sōseki",
+						"Natsume Sōseki",
+						"Natsume, Kin'nosuke",
+						"Natsume Kin'nosuke",
+						"Kin'nosuke Natsume",
+						"Natsume Kinnosuke",
+						"Kinnosuke Natsume",
+						"Sōseki, Natsume",
+						"Xiamu, Shushi",
+					},
+				},
+			},
+		},
+		Valid: true,
+	},
 }
 
 func TestAuthSearch(t *testing.T) {
